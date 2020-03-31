@@ -1,0 +1,40 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "bento/centos-7.5"
+
+  # Mount the host AWS credentials inside the Vagrant box so it can do Secrets Manager lookups
+  #config.vm.synced_folder "~/.aws", "/home/vagrant/.aws"
+
+# Declare script to bootstrap the Ansible dependencies (pip and boto)
+$deps_script = <<-SCRIPT
+sudo yum --enablerepo=extras install -y epel-release
+sudo yum install -y python-setuptools
+sudo yum install -y python-pip python-wheel
+sudo pip install boto3
+sudo pip install ansible
+SCRIPT
+
+  config.vm.define "devops" do |devops|
+    devops.vm.hostname = "devops"
+  config.vm.provider :virtualbox do |vb|
+        vb.name = "sample_webapp"
+    end
+
+    # Copy the ansible folder to the guest
+    devops.vm.provision "file", source: "../ansible", destination: "/vagrant/ansible"
+
+    # Run the yum bootstrap script
+    devops.vm.provision "shell", inline: $deps_script
+
+    # Run the Ansible playbook
+    devops.vm.provision "ansible_local" do |ansible|
+      ansible.verbose            = "vvvv"
+      ansible.galaxy_roles_path  = "./ansible/roles"
+      ansible.playbook           = "./ansible/site.yml"
+      ansible.limit              = "all"
+      ansible.playbook_command   = "ansible-playbook"
+    end
+
+  end
+
+end

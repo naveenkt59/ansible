@@ -1,0 +1,5 @@
+- name: Tomcat | Install
+  import_tasks: install_tomcat.yml
+
+- name: Deploy | app
+  import_tasks: deploy_app.yml

@@ -1,0 +1,6 @@
+---
+# handlers 
+- name: Start service tomcat, if not started
+  service:
+    name: tomcat
+    state: started

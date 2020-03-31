@@ -1,0 +1,10 @@
+- name: ensure a list of packages installed
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - tomcat
+    - tomcat-webapps
+    - tomcat-admin-webapps
+    - tomcat-docs-webapp
+    - tomcat-javadoc

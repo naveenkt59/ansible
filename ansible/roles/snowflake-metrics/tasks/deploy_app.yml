@@ -1,0 +1,5 @@
+- name: Download war from nexus
+  get_url:
+    url: http://192.168.0.1:8081/nexus/content/groups/java-grp/java-grp/SampleWebApp/7/SampleWebApp-7.war
+    dest: /usr/share/tomcat/webapps/samplewebapp.war
+    mode: '0755'
